@@ -5,7 +5,6 @@ pub mod float;
 pub mod gc;
 pub mod global;
 pub mod hash;
-pub mod module;
 pub mod rproc;
 pub mod string;
 pub mod symbol;

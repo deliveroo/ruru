@@ -25,7 +25,6 @@ pub use class::gc::GC;
 pub use class::hash::Hash;
 pub use class::integer::Integer;
 pub use class::nil_class::NilClass;
-pub use class::module::Module;
 pub use class::rproc::Proc;
 pub use class::string::RString;
 pub use class::symbol::Symbol;
