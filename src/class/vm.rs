@@ -1,7 +1,7 @@
 use std::slice;
 
 use binding::vm;
-use types::{Argc, Value, c_int};
+use types::{Argc, Value};
 
 use {AnyObject, Class, Object, Proc};
 
@@ -129,12 +129,40 @@ impl VM {
     /// }
     /// ```
     ///
+    /// `Err` will return an `AnyObject` of the exception class raised.
+    ///
+    ///
+    /// ```
+    /// #[macro_use]
+    /// extern crate ruru;
+    ///
+    /// use ruru::{Class, Fixnum, Object, RString, VM};
+    ///
+    /// fn main() {
+    ///     # VM::init();
+    ///
+    ///     let result = VM::eval("raise IndexError, 'flowers'");
+    ///
+    ///     match result {
+    ///       Err(ao) => {
+    ///         let err = Class::from(ao.value());
+    ///         let message = err.send("message", None);
+    ///         let s = message.try_convert_to::<RString>();
+    ///         assert_eq!(s.ok().unwrap().to_string(), "flowers");
+    ///       },
+    ///       _ => { unreachable!() }
+    ///     }
+    /// }
+    /// ```
+    ///
     /// Be aware when checking for equality amongst types like strings, that even
     /// with the same content in Ruby, they will evaluate to different values in
     /// C/Rust.
-    pub fn eval(string: &str) -> Result<AnyObject, c_int> {
+    pub fn eval(string: &str) -> Result<AnyObject, AnyObject> {
         vm::eval_string_protect(string).map(|v|
             AnyObject::from(v)
+        ).map_err(|_|
+            AnyObject::from(vm::errinfo())
         )
     }
 
