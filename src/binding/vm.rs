@@ -62,6 +62,10 @@ pub fn raise(exception: Value, message: &str) {
     }
 }
 
+pub fn raise_ex(exception: Value) {
+    unsafe { vm::rb_exc_raise(exception); }
+}
+
 pub fn errinfo() -> Value {
     unsafe { vm::rb_errinfo() }
 }
