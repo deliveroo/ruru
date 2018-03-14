@@ -14,3 +14,6 @@ license = "MIT"
 [dependencies]
 ruby-sys = { git = "https://github.com/danielpclark/ruby-sys", branch = "playground" }
 lazy_static = "0.2.1"
+
+[features]
+test = ["ruby-sys/test"]
