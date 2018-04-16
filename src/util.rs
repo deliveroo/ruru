@@ -1,6 +1,6 @@
 use std::ffi::{CStr, CString};
 use std::ptr;
-use std::boxed::FnBox;
+use boxfnonce::BoxFnOnce;
 
 use binding::global::RubySpecialConsts;
 use types::{c_char, c_int, c_void, Argc, InternalValue, Value};
@@ -61,7 +61,7 @@ where
         Box::into_raw(Box::new(r)) as *const c_void
     };
 
-    let fnbox = Box::new(wrap_return) as Box<FnBox() -> *const c_void>;
+    let fnbox = BoxFnOnce::from(wrap_return);
 
     Box::into_raw(Box::new(fnbox)) as *const c_void
 }

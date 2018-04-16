@@ -1,5 +1,5 @@
 use std::ptr;
-use std::boxed::FnBox;
+use boxfnonce::BoxFnOnce;
 
 use ruby_sys::{thread, vm};
 
@@ -140,10 +140,9 @@ where
 }
 
 extern "C" fn callbox(boxptr: *const c_void) -> *const c_void {
-    let fnbox: Box<Box<FnBox() -> *const c_void>> =
-        unsafe { Box::from_raw(boxptr as *mut Box<FnBox() -> *const c_void>) };
-
-    let fnbox_result = fnbox();
+    let fnbox: Box<BoxFnOnce<(), *const c_void>> =
+        unsafe { Box::from_raw(boxptr as *mut BoxFnOnce<(), *const c_void>) };
+    let fnbox_result = fnbox.call();
     let result: Box<*const c_void> = unsafe { Box::from_raw(fnbox_result as *mut *const c_void) };
     *result
 }

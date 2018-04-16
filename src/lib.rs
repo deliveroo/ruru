@@ -1,10 +1,10 @@
-#![feature(fnbox)]
-
 #[allow(unused_imports)]
 #[macro_use]
 extern crate lazy_static;
 
 extern crate ruby_sys;
+
+extern crate boxfnonce;
 
 mod binding;
 mod class;
