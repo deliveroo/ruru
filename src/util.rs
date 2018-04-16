@@ -1,5 +1,6 @@
 use std::ffi::{CStr, CString};
 use std::ptr;
+use std::boxed::FnBox;
 
 use binding::global::RubySpecialConsts;
 use types::{c_char, c_int, c_void, Argc, InternalValue, Value};
@@ -43,8 +44,10 @@ pub fn arguments_to_values(arguments: Option<&[AnyObject]>) -> Option<Vec<Value>
 }
 
 pub fn process_arguments(arguments: &Option<Vec<Value>>) -> (Argc, *const Value) {
-    match *arguments {
-        Some(ref arguments) => (arguments.len() as Argc, arguments.as_ptr()),
+    match arguments {
+        Some(ref arguments) => {
+            (arguments.len() as Argc, arguments.as_ptr())
+        },
         None => (0, ptr::null()),
     }
 }
@@ -58,7 +61,7 @@ where
         Box::into_raw(Box::new(r)) as *const c_void
     };
 
-    let fnbox = Box::new(wrap_return) as Box<FnOnce() -> *const c_void>;
+    let fnbox = Box::new(wrap_return) as Box<FnBox() -> *const c_void>;
 
     Box::into_raw(Box::new(fnbox)) as *const c_void
 }

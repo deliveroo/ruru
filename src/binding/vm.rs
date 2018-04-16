@@ -1,4 +1,5 @@
 use std::ptr;
+use std::boxed::FnBox;
 
 use ruby_sys::{thread, vm};
 
@@ -138,11 +139,13 @@ where
     }
 }
 
-extern "C" fn callbox(boxptr: *mut c_void) -> *const c_void {
-    let mut fnbox: Box<Box<FnMut() -> *const c_void>> =
-        unsafe { Box::from_raw(boxptr as *mut Box<FnMut() -> *const c_void>) };
+extern "C" fn callbox(boxptr: *const c_void) -> *const c_void {
+    let fnbox: Box<Box<FnBox() -> *const c_void>> =
+        unsafe { Box::from_raw(boxptr as *mut Box<FnBox() -> *const c_void>) };
 
-    fnbox()
+    let fnbox_result = fnbox();
+    let result: Box<*const c_void> = unsafe { Box::from_raw(fnbox_result as *mut *const c_void) };
+    *result
 }
 
 pub fn protect<F, R>(func: F) -> Result<Value, c_int>
@@ -150,10 +153,11 @@ where
     F: FnOnce() -> R,
 {
     let mut state = 0;
+    let closure_ptr = util::closure_to_ptr(func);
     let value = unsafe {
         vm::rb_protect(
             callbox as CallbackPtr,
-            util::closure_to_ptr(func),
+            closure_ptr,
             &mut state as *mut c_int,
         )
     };

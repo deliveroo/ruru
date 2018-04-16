@@ -717,7 +717,7 @@ pub trait Object: From<Value> {
     /// ```
     fn send(&self, method: &str, arguments: Option<&[AnyObject]>) -> AnyObject {
         let arguments = util::arguments_to_values(arguments);
-        let result = binding_util::call_method(self.value(), method, arguments);
+        let result = binding_util::call_method(self.value(), method, &arguments);
 
         AnyObject::from(result)
     }
@@ -753,7 +753,7 @@ pub trait Object: From<Value> {
         let m = "==";
         let a = vec![other.value()];
 
-        binding_util::call_method(v, m, Some(a)).is_true()
+        binding_util::call_method(v, m, &Some(a)).is_true()
     }
 
     /// Alias for Ruby's `===`
@@ -784,7 +784,7 @@ pub trait Object: From<Value> {
         let m = "===";
         let a = vec![other.value()];
 
-        binding_util::call_method(v, m, Some(a)).is_true()
+        binding_util::call_method(v, m, &Some(a)).is_true()
     }
 
     /// Alias for Ruby's `eql?`
@@ -819,7 +819,7 @@ pub trait Object: From<Value> {
         let m = "eql?";
         let a = vec![other.value()];
 
-        binding_util::call_method(v, m, Some(a)).is_true()
+        binding_util::call_method(v, m, &Some(a)).is_true()
     }
 
     /// Alias for Ruby's `equal?`
@@ -854,7 +854,7 @@ pub trait Object: From<Value> {
         let m = "equal?";
         let a = vec![other.value()];
 
-        binding_util::call_method(v, m, Some(a)).is_true()
+        binding_util::call_method(v, m, &Some(a)).is_true()
     }
 
     /// Checks whether the object responds to given method
@@ -916,12 +916,12 @@ pub trait Object: From<Value> {
     ///     unreachable!()
     /// }
     /// ```
-    fn protect_send(&self, method: String, arguments: Option<&[AnyObject]>) -> Result<AnyObject, AnyObject> {
+    fn protect_send(&self, method: &str, arguments: Option<&[AnyObject]>) -> Result<AnyObject, AnyObject> {
         let v = self.value();
         let arguments = util::arguments_to_values(arguments);
 
         let closure = move || {
-            binding_util::call_method(v, &method, arguments)
+            binding_util::call_method(v, method, &arguments)
         };
 
         let result = vm::protect(closure);
@@ -980,12 +980,12 @@ pub trait Object: From<Value> {
     ///     unreachable!()
     /// }
     /// ```
-    fn protect_public_send(&self, method: String, arguments: Option<&[AnyObject]>) -> Result<AnyObject, AnyObject> {
+    fn protect_public_send(&self, method: &str, arguments: Option<&[AnyObject]>) -> Result<AnyObject, AnyObject> {
         let v = self.value();
         let arguments = util::arguments_to_values(arguments);
 
         let closure = move || {
-            binding_util::call_public_method(v, &method, arguments)
+            binding_util::call_public_method(v, method, &arguments)
         };
 
         let result = vm::protect(closure);
