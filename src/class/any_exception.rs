@@ -22,7 +22,7 @@ impl Exception for AnyException {}
 
 impl VerifiedObject for AnyException {
     fn is_correct_type<T: Object>(object: &T) -> bool {
-        object.value().ty() == ValueType::Class &&
+        object.value().ty() == ValueType::Object &&
           object.respond_to("set_backtrace")
     }
 
