@@ -44,7 +44,7 @@ pub fn arguments_to_values(arguments: Option<&[AnyObject]>) -> Option<Vec<Value>
 }
 
 pub fn process_arguments(arguments: &Option<Vec<Value>>) -> (Argc, *const Value) {
-    match arguments {
+    match *arguments {
         Some(ref arguments) => {
             (arguments.len() as Argc, arguments.as_ptr())
         },
