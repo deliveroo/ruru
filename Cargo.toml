@@ -12,7 +12,7 @@ keywords = ["cruby", "mri", "ruby", "ruru"]
 license = "MIT"
 
 [dependencies]
-ruby-sys = { git = "https://github.com/danielpclark/ruby-sys", branch = "playground" }
+ruby-sys = { git = "https://github.com/deliveroo/ruby-sys", branch = "playground" }
 lazy_static = "0.2.1"
 boxfnonce = "0.1.0"
 

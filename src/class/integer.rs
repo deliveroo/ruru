@@ -34,6 +34,28 @@ impl Integer {
         Self::from(fixnum::int_to_num(num))
     }
 
+    /// Retrieves an `i32` value from `Integer`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use ruru::{Integer, VM};
+    /// # VM::init();
+    ///
+    /// let integer = Integer::new(1);
+    ///
+    /// assert_eq!(integer.to_i32(), 1);
+    /// ```
+    ///
+    /// Ruby:
+    ///
+    /// ```ruby
+    /// 1 == 1
+    /// ```
+    pub fn to_i32(&self) -> i32 {
+        fixnum::num_to_int(self.value())
+    }
+
     /// Retrieves an `i64` value from `Integer`.
     ///
     /// # Examples
@@ -53,7 +75,7 @@ impl Integer {
     /// 1 == 1
     /// ```
     pub fn to_i64(&self) -> i64 {
-        fixnum::num_to_int(self.value())
+        fixnum::num_to_long(self.value())
     }
 }
 
